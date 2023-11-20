@@ -1,0 +1,125 @@
+---
+title: "ngetest"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r, message=FALSE, warning=FALSE}
+#### Panggil semua package yang diperlukan.
+library(readxl) #membaca file Excel
+library(nortest) #uji normalitas
+library(ggplot2) #grafik dgn package ggplot2
+library(dplyr)
+## R Markdown
+
+#-----------------------3------------------------------#
+hp <- readxl::read_excel("GFormDarren.xlsx", sheet = "PerbandinganHargaHP")
+str(hp)
+head(hp)
+tail(hp)
+
+options(scipen = 100)
+#to reset scipen = 0)#
+
+#histogram(distribusi normal)
+set.seed(1)
+judul <- "Pengguna Android"
+judul2 <- "Pengguna IOS"
+labelx <- "Sumbu x"
+labely <- "Jumlah Pengguna"
+
+hist(hp$`9. Berapa harga hp Anda (dalam rupiah)? [contoh tulis : 1.000.000]` , xlim = c(1000000,10000000),main = judul,  ylab = labely )
+hist(hp$`10. Berapa harga hp Anda (dalam rupiah)? [contoh tulis : 1.000.000]`, xlim = c(1000000,15000000),main = judul2, ylab = labely)
+
+
+#3B------------------------------#
+#membuat tabel#
+qqnorm(hp$`9. Berapa harga hp Anda (dalam rupiah)? [contoh tulis : 1.000.000]`, main = judul)
+qqline(hp$`9. Berapa harga hp Anda (dalam rupiah)? [contoh tulis : 1.000.000]`, main = judul)
+
+#shappirotest#
+(test1 <- stats::shapiro.test(hp$`9. Berapa harga hp Anda (dalam rupiah)? [contoh tulis : 1.000.000]`))
+
+
+#Density
+plot(density(hp$`9. Berapa harga hp Anda (dalam rupiah)? [contoh tulis : 1.000.000]`), main = "Densitas Android oleh Christopher Darren 00000054804")
+#plot(density(hp$`10. Berapa harga hp Anda (dalam rupiah)? [contoh tulis : 1.000.000]`), main = "Densitas IOS oleh Christopher Darren 00000054804")#
+
+#3C--------------------------------------------#
+#uji hipotesa 
+
+alpha <- 0.1
+rata1 <- mean(hp$`9. Berapa harga hp Anda (dalam rupiah)? [contoh tulis : 1.000.000]`)
+(tt <- t.test(hp$`9. Berapa harga hp Anda (dalam rupiah)? [contoh tulis : 1.000.000]`, mu = rata1, conf.level = 1-alpha, alternative = "two.sided"))
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+library(readxl) #membaca file Excel
+library(nortest) #uji normalitas
+library(ggplot2) #grafik dgn package ggplot2
+library(dplyr)
+nilai <- readxl::read_excel("onsite.xlsx", sheet = "nomer1")
+str(nilai)
+head(nilai)
+tail(nilai)
+
+#-------1----------------------#
+#mean
+#Table A
+mean(nilai$`class A`)
+
+#Table B
+mean(nilai$`class B`)
+
+#varians
+#Table A
+var(nilai$`class A`)
+
+#Table B
+var(nilai$`class B`)
+
+#Simpangan Baku
+#Table A
+sd(nilai$`class A`)
+
+#Table B
+sd(nilai$`class B`)
+
+#ukuran sebaran data
+#(nilai <- sd(nilai$`class A` / mean(nilai$`class A`)))#
+(nilai <- sd(nilai$`class B` / mean(nilai$`class B`)))
+
+#------------------2-------------------#
+#mencari probabilitas#
+#--a--#
+
+dbinom(x  = 5, size = 15, prob = 0.20 )
+
+#--b--#
+pbinom(q = 10, size = 15, prob = 0.2, lower.tail = FALSE)
+
+#--c--#
+mean(dbinom( x = 0:15, size = 15, prob = 0.20))
+var(dbinom(x = 0:15, size = 15 , prob = 0.20))
+
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
